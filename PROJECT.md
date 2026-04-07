@@ -1,8 +1,8 @@
 # Projet « École » — Application de soutien scolaire pour le primaire
 
 > Document de cadrage et directives projet.
-> Version : 0.1 — 2026-04-07
-> Périmètre MVP : **Mathématiques niveau CM1**
+> Version : 0.2 — 2026-04-07
+> Périmètre MVP : **Mathématiques — Cycle 3 complet (CM1 / CM2 / 6ᵉ)**
 
 ---
 
@@ -197,11 +197,14 @@ Le détail (objectifs par niveau et par période) vit dans :
 - ⏳ Validation du modèle de données
 
 ### Phase 1 — Fondations
-- Init du projet Laravel 13 (API + Filament)
-- Init du projet Angular 21
-- Schéma de base + seeders du référentiel CM1 maths
-- Auth famille + profils enfants
-- Squelette dashboard parent + dashboard enfant
+- ✅ Init du projet Laravel 13 (backend/) + Filament v5 + Laravel Boost
+- ✅ Init du projet Angular 21 (frontend/) avec SSR
+- ✅ Monorepo git unifié, remote GitHub `PierreBultez/kid-school`
+- ✅ Schéma de base du référentiel pédagogique (6 tables : cycles, disciplines, domains, topics, learning_objectives, transversal_skills)
+- ✅ Seeder YAML idempotent → 78 objectifs cycle 3 maths en base
+- ✅ Back-office Filament complet pour naviguer/éditer le référentiel
+- ⏳ Auth famille + profils enfants (prochaine étape majeure)
+- ⏳ Squelette dashboard parent + dashboard enfant
 
 ### Phase 2 — Premier mini-jeu
 - Choix PixiJS vs Phaser
@@ -257,15 +260,64 @@ Le détail (objectifs par niveau et par période) vit dans :
 
 ---
 
-## 11. Prochaines étapes immédiates
+## 11. État d'avancement (2026-04-07)
 
-1. ✅ ~~Explorer le MCP data.gouv pour les programmes officiels~~ → BO uniquement disponible en PDF, pas de référentiel structuré.
-2. ✅ ~~Décider de la structure repo~~ → monorepo.
-3. ✅ ~~Référentiel maths Cycle 3 extrait~~ → fidèle au PDF Eduscol des « Repères annuels de progression », fichier `backend/database/data/referentiel/cycle3/mathematiques.yaml`
-4. ✅ ~~Pivoter le scope MVP vers le cycle complet (CM1+CM2+6e)~~
-5. **Initialiser** le monorepo : `backend/` (Laravel 13 + Filament v5) et `frontend/` (Angular 21).
-6. **Migrations + seeders** Laravel qui consomment le YAML pour peupler `domains`, `topics`, `learning_objectives`, `transversal_skills`.
-7. **(Optionnel)** faire relire le YAML par un enseignant pour valider la fidélité Eduscol et signaler tout objectif mal interprété.
+### ✅ Acquis
+1. ~~Explorer le MCP data.gouv pour les programmes officiels~~ → BO uniquement disponible en PDF, pas de référentiel structuré.
+2. ~~Décider de la structure repo~~ → monorepo.
+3. ~~Référentiel maths Cycle 3 extrait~~ → fidèle au PDF Eduscol des « Repères annuels de progression » (`backend/database/data/referentiel/cycle3/mathematiques.yaml`).
+4. ~~Pivoter le scope MVP vers le cycle complet (CM1+CM2+6e)~~.
+5. ~~Monorepo initialisé~~ → `backend/` (Laravel 13 + Filament v5 + Laravel Boost) et `frontend/` (Angular 21 avec SSR). Remote GitHub : `PierreBultez/kid-school`.
+6. ~~Migrations du référentiel pédagogique~~ → 6 tables relationnelles avec FK, index composites uniques, et CHECK constraints Postgres garantissant la cohérence `period_mode` / `period`.
+7. ~~Modèles Eloquent~~ → `Cycle`, `Discipline`, `Domain`, `Topic`, `LearningObjective`, `TransversalSkill` avec relations `belongsTo`/`hasMany` câblées.
+8. ~~Seeder YAML idempotent~~ → `ReferentielCycle3MathSeeder` via Symfony YAML. Peuple 1 cycle + 1 discipline + 3 domaines + 22 topics + 78 objectifs + 6 compétences transversales. Rejouable via `updateOrCreate()`.
+9. ~~Back-office Filament v5 complet~~ → 6 ressources groupées sous « Référentiel » avec :
+   - Formulaires avec `Select` relationnels, `Section`s groupées, champs conditionnels (`live()` + `visible()`) sur `period_mode`/`period`.
+   - Hook `mutateFormDataBeforeSave`/`BeforeCreate` pour garantir la cohérence avant persistance (défense en profondeur avec le CHECK DB).
+   - Tables avec colonnes relationnelles (`cycle.name`), badges colorés par niveau, filtres `SelectFilter`, tooltips sur descriptions longues.
+   - Tri du menu via `$navigationSort` pour suivre la hiérarchie pédagogique.
+
+### ⏳ Prochaines étapes — dans cet ordre
+
+#### Étape 1 — Auth & familles (socle utilisateur)
+**Pourquoi en premier :** sans notion d'enfant et de famille, impossible de rattacher de la progression, donc impossible d'avancer sur le cœur métier.
+
+Tâches :
+- Étendre `User` Laravel pour distinguer rôles (`admin`, `parent`).
+- Table `families` (une famille = un foyer).
+- Table `children` / `child_profiles` (rattachés à une famille, portent `school_year`, `avatar`, `display_name`, `pin_code` optionnel).
+- Ressources Filament pour gérer les familles côté admin.
+- Mise en place **Laravel Sanctum** pour l'auth API (token-based) côté futur front Angular.
+- Intégrer dès le départ les contraintes **RGPD** : soft delete / hard delete en cascade, export des données d'un enfant, consentement parental explicite tracé.
+- Policies Laravel : un parent ne voit que sa famille, un enfant ne voit que son propre profil.
+
+#### Étape 2 — Angular side (premiers pas front)
+**Pourquoi ensuite :** après la grosse phase Laravel, basculer sur Angular permet de casser la monotonie et de se familiariser avec le framework sur une base concrète et stable. Ça force aussi à finaliser proprement l'API REST côté back.
+
+Tâches :
+- Audit rapide de `frontend/` (structure Angular 21, routing, configuration SSR).
+- Configuration Tailwind (cohérence avec Filament).
+- Service `ApiService` qui attaque Laravel via `fetch`/`HttpClient`, gestion du token Sanctum.
+- Écran de login parent (Reactive Forms, signals pour l'état).
+- Première page protégée : **lecture seule du référentiel pédagogique** (liste des domaines → topics → objectifs, filtrable par niveau). Aucune logique métier, juste un consommateur d'API — l'objectif est de mettre en place les fondations Angular (routing, guards, services, composants standalone, signals, pipes).
+- Mise en place d'ESLint + Prettier stricts.
+
+#### Étape 3 — Progression & jeux (cœur métier)
+**Pourquoi en dernier :** c'est le plus gros morceau et il suppose qu'un enfant est identifié (étape 1) et qu'il y a un client front fonctionnel (étape 2).
+
+Tâches :
+- Table `games` (métadonnées) + `game_variants` (difficulté/niveau).
+- Table pivot `game_objective_links` (Game ↔ LearningObjective N↔N).
+- Table `game_sessions` (une partie : enfant, jeu, score, durée, timestamps).
+- Table `objective_progress` (état d'acquisition d'un objectif par enfant : `not_started` / `in_progress` / `mastered`, nombre d'essais, dernière MAJ).
+- Endpoints API Laravel pour démarrer une session, poser un état, incrémenter la progression.
+- Premier mini-jeu PixiJS intégré dans Angular (calcul mental, 3 niveaux de difficulté).
+- Brique de gamification minimale : XP gagné à la fin d'une session.
+
+### Hors roadmap mais à ne pas oublier
+- Faire relire le YAML par un enseignant pour valider la fidélité Eduscol.
+- Mettre en place une CI GitHub Actions (tests Pest backend + tests Angular + lint).
+- Sentry + PostHog quand la bêta approche.
 
 ---
 

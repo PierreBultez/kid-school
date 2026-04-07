@@ -1,0 +1,802 @@
+# Référentiel des compétences — Mathématiques — Cycle 3
+#
+# ────────────────────────────────────────────────────────────────────────────
+# SOURCES OFFICIELLES (deux documents complémentaires)
+# ────────────────────────────────────────────────────────────────────────────
+#
+# 1. Bulletin Officiel — Programme du cycle 3
+#    Arrêté du 17-7-2020, J.O. du 28-7-2020 (annexe 2)
+#    Référence légale : MENE2018714A
+#    PDF local : docs/sources/cycle3-bo-2020.pdf (pages 90-98)
+#    → Définit les attendus de fin de cycle et les compétences travaillées
+#
+# 2. Repères annuels de progression — Mathématiques cycle 3 (Eduscol)
+#    Annexe 23 du document Eduscol "Repères annuels de progression"
+#    PDF local : docs/sources/cycle3-eduscol-reperes-maths.pdf (11 pages)
+#    URL : https://eduscol.education.gouv.fr/sites/default/files/document/23-maths-c3-reperes-eduscol1114753pdf-74667.pdf
+#    → Donne la répartition CM1 / CM2 / 6e (et parfois la période 1-5)
+#
+# C'est Eduscol qui sert de SOURCE PRIMAIRE pour la structure de ce YAML,
+# car il fournit la progression annuelle qui n'est pas dans le BO.
+#
+# ────────────────────────────────────────────────────────────────────────────
+# STRUCTURE
+# ────────────────────────────────────────────────────────────────────────────
+#
+# Hiérarchie : domain → topic → learning_objectives[]
+#
+# Chaque learning_objective représente UN attendu pédagogique pour UN niveau
+# scolaire donné. Il est l'unité élémentaire ciblée par les mini-jeux et
+# suivie dans la progression d'un enfant.
+#
+# Champs d'un learning_objective :
+#   - code         : identifiant stable (CY3-MAT-<DOMAIN>-<TOPIC>-<LEVEL>-<NUM>)
+#   - level        : cm1 | cm2 | 6e
+#   - period       : 1..5 (entier) ou "all" si tout au long de l'année,
+#                    null si non précisé par Eduscol
+#   - description  : citation/reformulation fidèle d'Eduscol
+#   - bo_link      : codes des compétences BO associées (optionnel, V2)
+#
+# Niveaux scolaires (clés YAML) : cm1, cm2, sixieme
+# (on évite "6e" comme clé YAML pour éviter les confusions de parsing)
+#
+# ────────────────────────────────────────────────────────────────────────────
+
+cycle: cycle3
+discipline: mathematiques
+levels: [cm1, cm2, sixieme]
+sources:
+  - kind: bo
+    reference: "Arrêté du 17-7-2020, annexe 2"
+    pdf: docs/sources/cycle3-bo-2020.pdf
+    pages: "90-98"
+  - kind: eduscol
+    reference: "Repères annuels de progression cycle 3 — Mathématiques (annexe 23)"
+    pdf: docs/sources/cycle3-eduscol-reperes-maths.pdf
+    pages: "1-11"
+
+# ────────────────────────────────────────────────────────────────────────────
+# Compétences transversales (les "6 compétences majeures" du BO maths cycle 3)
+# Elles ne progressent pas par année — elles s'exercent tout au long du cycle.
+# ────────────────────────────────────────────────────────────────────────────
+transversal_skills:
+  - { code: CY3-MAT-TRA-CHE, name: Chercher,    socle: [2, 4] }
+  - { code: CY3-MAT-TRA-MOD, name: Modéliser,   socle: [1, 2, 4] }
+  - { code: CY3-MAT-TRA-REP, name: Représenter, socle: [1, 5] }
+  - { code: CY3-MAT-TRA-RAI, name: Raisonner,   socle: [2, 3, 4] }
+  - { code: CY3-MAT-TRA-CAL, name: Calculer,    socle: [4] }
+  - { code: CY3-MAT-TRA-COM, name: Communiquer, socle: [1, 3] }
+
+# ════════════════════════════════════════════════════════════════════════════
+# DOMAINE 1 — NOMBRES ET CALCULS
+# ════════════════════════════════════════════════════════════════════════════
+domains:
+  - code: NCA
+    name: Nombres et calculs
+    end_of_cycle_expectations:
+      - Utiliser et représenter les grands nombres entiers, des fractions simples, les nombres décimaux.
+      - Calculer avec des nombres entiers et des nombres décimaux.
+      - Résoudre des problèmes en utilisant des fractions simples, les nombres décimaux et le calcul.
+
+    topics:
+
+      # ── Les nombres entiers ───────────────────────────────────────────────
+      - code: NCA-ENT
+        name: Les nombres entiers
+        cycle_note: La valeur positionnelle des chiffres doit constamment être mise en lien avec des activités de groupements et d'échanges.
+        learning_objectives:
+          - code: CY3-MAT-NCA-ENT-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Utiliser et représenter les grands nombres entiers jusqu'au million.
+              Consolider les connaissances : écritures, représentations.
+          - code: CY3-MAT-NCA-ENT-CM2-01
+            level: cm2
+            period: null
+            description: Étendre le répertoire jusqu'au milliard.
+          - code: CY3-MAT-NCA-ENT-6E-01
+            level: sixieme
+            period: 1
+            description: |
+              Reprendre les principes de la numération décimale de position
+              jusqu'au million puis au milliard ; mobiliser sur les situations
+              les plus variées, notamment en relation avec d'autres disciplines.
+
+      # ── Fractions ─────────────────────────────────────────────────────────
+      - code: NCA-FRA
+        name: Fractions
+        learning_objectives:
+          - code: CY3-MAT-NCA-FRA-CM1-01
+            level: cm1
+            period: 1
+            description: |
+              Utiliser les fractions simples (2/3, 1/4, 5/2) dans le cadre de
+              partages de grandeurs. Travailler des fractions inférieures et
+              supérieures à 1.
+          - code: CY3-MAT-NCA-FRA-CM1-02
+            level: cm1
+            period: 2
+            description: |
+              Mobiliser régulièrement les fractions décimales : statut de nombre,
+              positionnement sur une demi-droite graduée, comparaison, addition
+              de fractions décimales de même dénominateur, écriture sous forme
+              de somme d'un entier et d'une fraction décimale inférieure à 1.
+          - code: CY3-MAT-NCA-FRA-CM2-01
+            level: cm2
+            period: 1
+            description: |
+              Étendre le registre des fractions manipulées (en particulier 1/1000).
+              Apprendre à écrire des fractions sous forme de somme d'un entier
+              et d'une fraction inférieure à 1.
+          - code: CY3-MAT-NCA-FRA-6E-01
+            level: sixieme
+            period: 1
+            description: |
+              Réactiver les fractions comme opérateurs de partage vues en CM,
+              puis les fractions décimales en relation avec les nombres décimaux
+              (par exemple à partir de mesures de longueurs). Ajouter des fractions
+              décimales de même dénominateur.
+          - code: CY3-MAT-NCA-FRA-6E-02
+            level: sixieme
+            period: 2
+            description: |
+              Étendre l'addition à des fractions de même dénominateur (≤ 5)
+              en privilégiant la vocalisation (« deux cinquièmes plus un cinquième
+              égale trois cinquièmes »).
+          - code: CY3-MAT-NCA-FRA-6E-03
+            level: sixieme
+            period: 3
+            description: |
+              Apprendre que a/b est le nombre qui, multiplié par b, donne a
+              (définition du quotient de a par b).
+
+      # ── Nombres décimaux ──────────────────────────────────────────────────
+      - code: NCA-DEC
+        name: Nombres décimaux
+        cycle_note: |
+          Tout au long du cycle, les désignations orale et écrite des nombres
+          décimaux basées sur les unités de numération contribuent à l'acquisition
+          du sens des nombres décimaux (par exemple pour 3,12 : « trois unités
+          et douze centièmes » ou « trois unités, un dixième et deux centièmes »
+          ou « trois cent douze centièmes »).
+        learning_objectives:
+          - code: CY3-MAT-NCA-DEC-CM1-01
+            level: cm1
+            period: 2
+            description: |
+              Utiliser les décimaux ayant au plus deux décimales en mettant en
+              relation fractions décimales et écritures à virgule (ex : 3,12 = 3 + 12/100).
+              Connaître des écritures décimales de fractions simples (1/2 = 0,5 ;
+              1/4 = 25/100 = 0,25 ; la moitié d'un entier sur des petits nombres).
+          - code: CY3-MAT-NCA-DEC-CM2-01
+            level: cm2
+            period: 1
+            description: |
+              Rencontrer et utiliser des nombres décimaux ayant une, deux ou trois
+              décimales. Connaître des écritures décimales de fractions simples
+              (1/5 = 0,2 = 2/10 ; 3/4 = 75/100 = 0,75 ; la moitié d'un entier).
+          - code: CY3-MAT-NCA-DEC-6E-01
+            level: sixieme
+            period: 1
+            description: |
+              Dans le prolongement des acquis du CM, travailler sur les décimaux
+              jusqu'à trois décimales.
+          - code: CY3-MAT-NCA-DEC-6E-02
+            level: sixieme
+            period: 2
+            description: La quatrième décimale est introduite au travers de diverses activités.
+
+      # ── Calcul mental ─────────────────────────────────────────────────────
+      - code: NCA-CAL-MENT
+        name: Calcul mental
+        cycle_note: |
+          Tout au long du cycle, la pratique régulière du calcul conforte et
+          consolide la mémorisation des tables de multiplication jusqu'à 9
+          (maîtrise attendue en fin de cycle 2).
+        learning_objectives:
+          - code: CY3-MAT-NCA-CAL-MENT-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Mémoriser les quatre premiers multiples de 25 et de 50.
+          - code: CY3-MAT-NCA-CAL-MENT-CM1-02
+            level: cm1
+            period: 3
+            description: |
+              Multiplier et diviser par 10 des nombres décimaux. Rechercher le
+              complément au nombre entier supérieur.
+          - code: CY3-MAT-NCA-CAL-MENT-CM1-03
+            level: cm1
+            period: "all"
+            description: |
+              Stabiliser sa connaissance des propriétés des opérations
+              (ex : 12+199 = 199+12 ; 5×21 = 21×5 ; 45×21 = 45×20 + 45×1 ;
+              6×18 = 6×20 - 6×2).
+          - code: CY3-MAT-NCA-CAL-MENT-CM1-04
+            level: cm1
+            period: 3
+            description: Apprendre les critères de divisibilité par 2, 5 et 10.
+          - code: CY3-MAT-NCA-CAL-MENT-CM1-05
+            level: cm1
+            period: 4
+            description: Multiplier par 1 000 un nombre décimal.
+          - code: CY3-MAT-NCA-CAL-MENT-CM2-01
+            level: cm2
+            period: null
+            description: Diviser un nombre décimal (entier ou non) par 100 dès le début de l'année.
+          - code: CY3-MAT-NCA-CAL-MENT-CM2-02
+            level: cm2
+            period: 3
+            description: Multiplier un nombre décimal (entier ou non) par 5 et par 50.
+          - code: CY3-MAT-NCA-CAL-MENT-CM2-03
+            level: cm2
+            period: 4
+            description: Apprendre les critères de divisibilité par 3 et par 9.
+          - code: CY3-MAT-NCA-CAL-MENT-CM2-04
+            level: cm2
+            period: "all"
+            description: |
+              Étendre l'utilisation des principales propriétés des opérations à
+              des calculs rendus plus complexes par la nature des nombres en jeu,
+              leur taille ou leur nombre (1,2 + 27,9 + 0,8 = 27,9 + 2 ;
+              3,2 × 25 × 4 = 3,2 × 100 ; 3,2 × 10 = 10 × 3,2).
+          - code: CY3-MAT-NCA-CAL-MENT-6E-01
+            level: sixieme
+            period: 1
+            description: |
+              Dans le prolongement des acquis du CM, réactiver la multiplication
+              et la division par 10, 100, 1 000.
+          - code: CY3-MAT-NCA-CAL-MENT-6E-02
+            level: sixieme
+            period: 2
+            description: |
+              Multiplier un nombre entier puis décimal par 0,1 et par 0,5
+              (différentes stratégies sont envisagées).
+          - code: CY3-MAT-NCA-CAL-MENT-6E-03
+            level: sixieme
+            period: "all"
+            description: |
+              Stabiliser la connaissance des propriétés des opérations et utiliser
+              la propriété de distributivité simple dans les deux sens
+              (23 × 12 = 23 × 10 + 23 × 2 ; 23 × 7 + 23 × 3 = 23 × 10).
+
+      # ── Calcul en ligne ───────────────────────────────────────────────────
+      - code: NCA-CAL-LIGNE
+        name: Calcul en ligne
+        cycle_note: |
+          Mêmes connaissances que pour le calcul mental, le support écrit allégeant
+          la mémoire de travail.
+        learning_objectives:
+          - code: CY3-MAT-NCA-CAL-LIGNE-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Dans des calculs simples, en relation avec l'utilisation de
+              calculatrices et confrontés à des problématiques de priorités
+              opératoires, utiliser des parenthèses.
+
+      # ── Calcul posé ───────────────────────────────────────────────────────
+      - code: NCA-CAL-POSE
+        name: Calcul posé
+        learning_objectives:
+          - code: CY3-MAT-NCA-CAL-POSE-CM1-01
+            level: cm1
+            period: 1
+            description: |
+              Renforcer la maîtrise des algorithmes appris au cycle 2 (addition,
+              soustraction et multiplication de deux nombres entiers).
+          - code: CY3-MAT-NCA-CAL-POSE-CM1-02
+            level: cm1
+            period: 2
+            description: |
+              Étendre aux nombres décimaux les algorithmes de l'addition et de
+              la soustraction.
+          - code: CY3-MAT-NCA-CAL-POSE-CM1-03
+            level: cm1
+            period: 3
+            description: Apprendre l'algorithme de la division euclidienne de deux nombres entiers.
+          - code: CY3-MAT-NCA-CAL-POSE-CM2-01
+            level: cm2
+            period: 1
+            description: |
+              Apprendre l'algorithme de la multiplication d'un nombre décimal
+              par un nombre entier (en relation avec le calcul de l'aire du rectangle).
+          - code: CY3-MAT-NCA-CAL-POSE-CM2-02
+            level: cm2
+            period: 2
+            description: |
+              Apprendre la division de deux nombres entiers (quotient décimal ou
+              non, par exemple 10:4 ou 10:3).
+          - code: CY3-MAT-NCA-CAL-POSE-CM2-03
+            level: cm2
+            period: 3
+            description: Apprendre la division d'un nombre décimal par un nombre entier.
+          - code: CY3-MAT-NCA-CAL-POSE-6E-01
+            level: sixieme
+            period: 3
+            description: Apprendre l'algorithme de la multiplication de deux nombres décimaux.
+
+      # ── Résolution de problèmes ───────────────────────────────────────────
+      - code: NCA-PRO
+        name: Résolution de problèmes
+        cycle_note: |
+          Dès le début du cycle, les problèmes proposés relèvent des quatre opérations.
+          La progressivité combine : nombres mis en jeu, nombre d'étapes, supports
+          de prise d'informations (texte, tableau, graphique).
+        learning_objectives:
+          - code: CY3-MAT-NCA-PRO-CYCLE-01
+            level: cm1
+            period: "all"
+            description: |
+              Résoudre des problèmes mettant en jeu les quatre opérations sur
+              des entiers et progressivement sur des décimaux, à une ou plusieurs
+              étapes, à partir de supports variés.
+
+      # ── Problèmes relevant de la proportionnalité ─────────────────────────
+      - code: NCA-PROP
+        name: Problèmes relevant de la proportionnalité
+        learning_objectives:
+          - code: CY3-MAT-NCA-PROP-CM1-01
+            level: cm1
+            period: 1
+            description: |
+              Rencontrer des situations de proportionnalité (recettes, etc.),
+              en privilégiant le recours aux propriétés de linéarité (additive
+              et multiplicative) explicitées via des exemples verbalisés.
+          - code: CY3-MAT-NCA-PROP-CM1-02
+            level: cm1
+            period: 2
+            description: Institutionnaliser progressivement les propriétés de linéarité.
+          - code: CY3-MAT-NCA-PROP-CM2-01
+            level: cm2
+            period: 1
+            description: |
+              Enrichir la palette des procédures par le passage par l'unité
+              lorsque cela s'avère pertinent.
+          - code: CY3-MAT-NCA-PROP-CM2-02
+            level: cm2
+            period: 3
+            description: |
+              Introduire le symbole % dans des cas simples, en lien avec les
+              fractions d'une quantité (50 % pour la moitié ; 25 % pour le quart ;
+              75 % pour les trois quarts ; 10 % pour le dixième).
+          - code: CY3-MAT-NCA-PROP-6E-01
+            level: sixieme
+            period: 2
+            description: |
+              Appliquer un pourcentage simple (en relation avec les fractions
+              simples de quantité : 10 %, 25 %, 50 %, 75 %).
+          - code: CY3-MAT-NCA-PROP-6E-02
+            level: sixieme
+            period: 3
+            description: Apprendre à appliquer un pourcentage dans des registres variés.
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # DOMAINE 2 — GRANDEURS ET MESURES
+  # ════════════════════════════════════════════════════════════════════════════
+  - code: GME
+    name: Grandeurs et mesures
+    end_of_cycle_expectations:
+      - Comparer, estimer, mesurer des grandeurs géométriques avec des entiers et des décimaux (longueur/périmètre, aire, volume, angle).
+      - Utiliser le lexique, les unités, les instruments de mesure spécifiques.
+      - Résoudre des problèmes impliquant des grandeurs en utilisant des entiers et des décimaux.
+
+    topics:
+
+      # ── Les longueurs ─────────────────────────────────────────────────────
+      - code: GME-LON
+        name: Les longueurs
+        learning_objectives:
+          - code: CY3-MAT-GME-LON-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Comparer des périmètres sans recours à la mesure, mesurer des
+              périmètres par report d'unités et de fractions d'unités, ou par
+              report des longueurs des côtés sur un segment de droite avec le compas.
+              Calculer le périmètre d'un polygone en ajoutant les longueurs de ses
+              côtés (entiers et fractions, puis décimaux à deux décimales).
+          - code: CY3-MAT-GME-LON-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Établir et utiliser les formules du périmètre du carré et du rectangle.
+              Continuer à calculer des périmètres de polygones variés en ajoutant
+              les longueurs des côtés.
+          - code: CY3-MAT-GME-LON-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Réinvestir les acquis du CM pour calculer des périmètres simples
+              ou complexes. Apprendre la formule de la longueur d'un cercle.
+
+      # ── Les durées ────────────────────────────────────────────────────────
+      - code: GME-DUR
+        name: Les durées
+        learning_objectives:
+          - code: CY3-MAT-GME-DUR-CM1-01
+            level: cm1
+            period: "all"
+            description: |
+              Consolider la lecture de l'heure et l'utilisation des unités de
+              mesure des durées et de leurs relations. Effectuer des conversions
+              (siècle/années ; semaine/jours ; heure/minutes ; minute/secondes).
+              Réinvestir dans la résolution de problèmes : calcul d'une durée
+              connaissant deux instants, calcul d'un instant connaissant un
+              instant et une durée.
+          - code: CY3-MAT-GME-DUR-CM2-01
+            level: cm2
+            period: "all"
+            description: |
+              Poursuivre l'appropriation des relations entre unités de durée.
+              Effectuer des conversions nécessitant l'interprétation d'un reste
+              (heures en jours, avec un reste en heures ; secondes en minutes,
+              avec un reste en secondes).
+          - code: CY3-MAT-GME-DUR-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Selon les situations, utiliser ses acquis de CM. Effectuer des
+              conversions à deux étapes (heures en semaines/jours/heures ;
+              secondes en heures/minutes/secondes).
+
+      # ── Les aires ─────────────────────────────────────────────────────────
+      - code: GME-AIR
+        name: Les aires
+        learning_objectives:
+          - code: CY3-MAT-GME-AIR-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Comparer des surfaces selon leur aire par estimation visuelle,
+              superposition ou découpage et recollement. Estimer des aires ou
+              les déterminer en faisant appel à une aire de référence.
+              Faire le lien avec le travail sur les fractions.
+          - code: CY3-MAT-GME-AIR-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Utiliser une unité de référence systématique (cm², dm², m²,
+              maille d'un quadrillage). Apprendre à utiliser les formules
+              d'aire du carré, du rectangle et du triangle rectangle.
+          - code: CY3-MAT-GME-AIR-6E-01
+            level: sixieme
+            period: null
+            description: |
+              En relation avec le travail sur la quatrième décimale, utiliser
+              les multiples et sous-multiples du m² et leurs relations. Utiliser
+              la formule pour calculer l'aire d'un triangle quelconque (données
+              entières), puis l'aire d'un triangle quelconque et celle d'un disque.
+
+      # ── Contenances et volumes ────────────────────────────────────────────
+      - code: GME-VOL
+        name: Les contenances et les volumes
+        learning_objectives:
+          - code: CY3-MAT-GME-VOL-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Comparer des contenances sans les mesurer, puis en les mesurant.
+              Découvrir et apprendre que le litre est la contenance d'un cube
+              de 10 cm d'arête. Faire des analogies avec les autres unités à
+              l'appui des préfixes.
+          - code: CY3-MAT-GME-VOL-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Poursuivre en utilisant de nouvelles unités de contenance : dL, cL et mL.
+          - code: CY3-MAT-GME-VOL-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Relier les unités de volume et de contenance (1 L = 1 dm³ ;
+              1 000 L = 1 m³). Utiliser les unités de volume cm³, dm³, m³ et
+              leurs relations. Calculer le volume d'un cube ou d'un pavé droit
+              en utilisant une formule.
+
+      # ── Les angles ────────────────────────────────────────────────────────
+      - code: GME-ANG
+        name: Les angles
+        learning_objectives:
+          - code: CY3-MAT-GME-ANG-CM-01
+            level: cm1
+            period: null
+            description: |
+              Repérer les angles d'une figure plane, les comparer par superposition
+              (papier calque) ou en utilisant un gabarit. Estimer puis vérifier
+              avec l'équerre qu'un angle est droit, aigu ou obtus.
+          - code: CY3-MAT-GME-ANG-CM-02
+            level: cm2
+            period: null
+            description: |
+              Poursuivre le travail entrepris au CM1 sur l'identification, la
+              comparaison et la qualification d'angles droits, aigus, obtus.
+          - code: CY3-MAT-GME-ANG-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Avant d'utiliser le rapporteur, attribuer des mesures en degrés
+              à des multiples ou sous-multiples de l'angle droit (90°). Apprendre
+              à utiliser un rapporteur pour mesurer un angle en degrés ou
+              construire un angle de mesure donnée en degrés.
+
+      # ── Proportionnalité (en grandeurs) ───────────────────────────────────
+      - code: GME-PROP
+        name: Proportionnalité
+        learning_objectives:
+          - code: CY3-MAT-GME-PROP-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Commencer à identifier et à résoudre des problèmes de proportionnalité
+              portant sur des grandeurs.
+          - code: CY3-MAT-GME-PROP-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Rencontrer des situations très simples impliquant des échelles et
+              des vitesses constantes.
+          - code: CY3-MAT-GME-PROP-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Sur des situations très simples en relation avec l'utilisation d'un
+              rapporteur, construire des représentations de données sous la forme
+              de diagrammes circulaires ou semi-circulaires.
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # DOMAINE 3 — ESPACE ET GÉOMÉTRIE
+  # ════════════════════════════════════════════════════════════════════════════
+  - code: EGE
+    name: Espace et géométrie
+    end_of_cycle_expectations:
+      - (Se) repérer et (se) déplacer dans l'espace en utilisant ou en élaborant des représentations.
+      - Reconnaître, nommer, décrire, reproduire, représenter, construire des figures et solides usuels.
+      - Reconnaître et utiliser quelques relations géométriques (alignement, perpendicularité, parallélisme, égalités, symétrie, agrandissement/réduction).
+    cycle_note: |
+      Il est possible, lors de la résolution de problèmes, d'aller avec certains
+      élèves ou toute la classe au-delà des repères de progression identifiés
+      pour chaque niveau.
+
+    topics:
+
+      # ── Apprentissages spatiaux ───────────────────────────────────────────
+      - code: EGE-SPA
+        name: Les apprentissages spatiaux
+        cycle_note: |
+          Tout au long du cycle, les apprentissages spatiaux (1, 2 ou 3 dimensions)
+          se réalisent à partir de problèmes de repérage, de déplacement d'objets,
+          d'élaboration de représentations dans des espaces réels ou numériques.
+        learning_objectives: []  # entièrement transversal au cycle, pas de découpage Eduscol par année
+
+      # ── Initiation à la programmation ─────────────────────────────────────
+      - code: EGE-PRG
+        name: Initiation à la programmation
+        learning_objectives:
+          - code: CY3-MAT-EGE-PRG-CM-01
+            level: cm1
+            period: null
+            description: |
+              Apprendre à programmer le déplacement d'un personnage sur un écran.
+              Commencer par compléter de tels programmes, puis apprendre à
+              corriger un programme erroné. Créer ses propres programmes d'objets
+              ou de personnages. Instructions absolues (« aller vers la fenêtre »)
+              ou relatives (« tourner d'un quart de tour à gauche »).
+          - code: CY3-MAT-EGE-PRG-CM-02
+            level: cm2
+            period: null
+            description: |
+              Poursuivre l'apprentissage de la programmation initié au CM1
+              (compléter, corriger, créer des programmes de déplacement).
+          - code: CY3-MAT-EGE-PRG-6E-01
+            level: sixieme
+            period: null
+            description: |
+              La construction de figures géométriques de plus en plus complexes
+              amène les élèves vers la répétition d'instructions. Programmer,
+              seuls ou en équipe, des saynètes impliquant un ou plusieurs
+              personnages interagissant ou se déplaçant simultanément ou
+              successivement.
+
+      # ── Apprentissages géométriques ───────────────────────────────────────
+      - code: EGE-GEO
+        name: Les apprentissages géométriques
+        learning_objectives:
+          - code: CY3-MAT-EGE-GEO-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Tracer avec l'équerre la perpendiculaire à une droite donnée en
+              un point donné de cette droite. Tracer un carré ou un rectangle
+              de dimensions données. Tracer un cercle de centre et de rayon
+              donnés ; un triangle rectangle de dimensions données.
+              Reconnaître et nommer une boule, un cylindre, un cône, un cube,
+              un pavé droit, un prisme droit, une pyramide. Construire un patron
+              d'un cube de dimension donnée.
+          - code: CY3-MAT-EGE-GEO-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Reconnaître et nommer un triangle isocèle, équilatéral, un losange,
+              à partir des propriétés de leurs côtés. Tracer avec l'équerre la
+              perpendiculaire à une droite par un point qui peut être extérieur.
+              Tracer la parallèle à une droite donnée passant par un point donné.
+              Construire, pour un cube de dimension donnée, des patrons différents.
+              Reconnaître, parmi un ensemble de patrons et de faux patrons, ceux
+              qui correspondent à un solide donné (cube, pavé droit, pyramide).
+          - code: CY3-MAT-EGE-GEO-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Représenter une figure à main levée avant d'en faire un tracé
+              instrumenté. Instaurer le codage de la figure à main levée
+              (égalités de longueurs, perpendicularité, égalité d'angles).
+              Construire à partir d'un programme de construction, en utilisant
+              tracés à main levée, instruments et logiciel de géométrie dynamique.
+              Définir et différencier le cercle et le disque. Réaliser des patrons
+              de pavés droits. Travailler sur des assemblages de solides simples.
+
+      # ── Le raisonnement ───────────────────────────────────────────────────
+      - code: EGE-RAI
+        name: Le raisonnement
+        cycle_note: |
+          La dimension perceptive, l'usage des instruments et les propriétés
+          élémentaires des figures sont articulés tout au long du cycle. Le
+          raisonnement peut prendre appui sur différents types de codage
+          (signe, qualité du trait, élément de figure traduisant une propriété
+          implicite, nature du support).
+        learning_objectives:
+          - code: CY3-MAT-EGE-RAI-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Employer un vocabulaire spécifique dès le début du cycle pour
+              désigner des objets, des relations et des propriétés.
+          - code: CY3-MAT-EGE-RAI-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Dépasser progressivement la dimension perceptive et instrumentée
+              des propriétés des figures planes pour tendre vers le raisonnement
+              hypothético-déductif. Conduire sans formalisme des raisonnements
+              simples utilisant les propriétés des figures usuelles ou de la
+              symétrie axiale.
+          - code: CY3-MAT-EGE-RAI-6E-01
+            level: sixieme
+            period: "all"
+            description: |
+              Faire évoluer la perception des activités géométriques (de
+              l'observation et du mesurage au codage et au raisonnement),
+              en s'appuyant sur les codages. Utiliser les propriétés relatives
+              aux droites parallèles ou perpendiculaires pour valider la méthode
+              de construction d'une parallèle à la règle et à l'équerre.
+              Compléter les acquis sur les propriétés des côtés par celles sur
+              les diagonales et les angles. Quand l'étude de la symétrie est
+              suffisamment avancée, utiliser les propriétés de conservation
+              (longueur, angle, aire, parallélisme) pour justifier sans
+              vérification instrumentée.
+
+      # ── Vocabulaire et notations ──────────────────────────────────────────
+      - code: EGE-VOC
+        name: Le vocabulaire et les notations
+        cycle_note: |
+          Tout au long du cycle, les notations (AB), [AB], [AB), AB sont
+          toujours précédées du nom de l'objet qu'elles désignent. Le vocabulaire
+          et les notations nouvelles sont introduits au fur et à mesure de leur
+          utilité, et non au départ d'un apprentissage.
+        learning_objectives:
+          - code: CY3-MAT-EGE-VOC-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Réutiliser le vocabulaire de fin de cycle 2 (côté, sommet, angle,
+              angle droit, face, arête, milieu, droite, segment). Commencer à
+              rencontrer la notation « segment [AB] » sans qu'elle soit exigible.
+              Pour les droites, parler de « la droite qui passe par les points
+              A et B » ou de « la droite d ».
+          - code: CY3-MAT-EGE-VOC-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Commencer à rencontrer la notation « droite (AB) ». Nommer les
+              angles par leur sommet (par exemple « l'angle Â »).
+          - code: CY3-MAT-EGE-VOC-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Utiliser la notation AB pour la longueur d'un segment, distincte
+              de la notation [AB]. Utiliser la notation « angle ABC » et celle
+              des demi-droites. Apprendre à rédiger un programme de construction
+              en utilisant le vocabulaire et les notations appropriés.
+
+      # ── Les instruments ───────────────────────────────────────────────────
+      - code: EGE-INS
+        name: Les instruments
+        learning_objectives:
+          - code: CY3-MAT-EGE-INS-CM1-01
+            level: cm1
+            period: "all"
+            description: |
+              Utiliser la règle graduée ou non, des bandes de papier à bord
+              droit pour reporter des longueurs. Utiliser l'équerre pour repérer
+              ou construire un angle droit. Utiliser des gabarits d'angle et du
+              papier calque. Utiliser le compas pour tracer un cercle, connaissant
+              centre et un point ou centre et rayon, ou pour reporter une longueur.
+          - code: CY3-MAT-EGE-INS-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Travailler sur les fractions simples de l'angle droit (« un demi
+              angle droit », « un tiers d'angle droit », « l'angle plat comme
+              somme de deux angles droits »). Comprendre que la mesure d'un
+              angle ne change pas lorsque l'on prolonge ses demi-droites.
+          - code: CY3-MAT-EGE-INS-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Se servir des instruments (règle, équerre, compas) pour reproduire
+              des figures simples, notamment un triangle de dimensions données,
+              en combinaison avec des tracés codés à main levée. Utiliser le
+              rapporteur pour mesurer et construire des angles. Quand le cercle
+              est défini et la propriété de la médiatrice connue, enrichir les
+              constructions à la règle et au compas.
+
+      # ── La symétrie axiale ────────────────────────────────────────────────
+      - code: EGE-SYM
+        name: La symétrie axiale
+        cycle_note: |
+          Reconnaître si une figure présente un axe de symétrie : conjecture
+          visuelle validée par papier calque, découpage, pliage. Compléter une
+          figure pour qu'elle devienne symétrique par rapport à un axe donné.
+        learning_objectives:
+          - code: CY3-MAT-EGE-SYM-CM1-01
+            level: cm1
+            period: null
+            description: |
+              Reconnaître qu'une figure admet un (ou plusieurs) axe de symétrie,
+              visuellement et/ou par pliage ou en utilisant du papier calque.
+              Compléter une figure par symétrie ou construire le symétrique
+              d'une figure par rapport à un axe donné, par pliage et piquage
+              ou en utilisant du papier calque.
+          - code: CY3-MAT-EGE-SYM-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Observer que deux points sont symétriques par rapport à une droite
+              lorsque le segment qui les joint coupe cette droite perpendiculairement
+              en son milieu. Construire à l'équerre et à la règle graduée le
+              symétrique d'un point, d'un segment, d'une figure.
+          - code: CY3-MAT-EGE-SYM-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Consolider les acquis du CM. Faire émerger l'image mentale de la
+              médiatrice d'une part et certaines conservations par symétrie
+              d'autre part. Donner du sens aux procédures de CM2 pour la
+              construction de symétriques. Définir la médiatrice d'un segment
+              et apprendre à la construire à la règle et à l'équerre. Étudier
+              les propriétés de conservation. Connaître la propriété
+              caractéristique de la médiatrice et l'utiliser pour tracer à la
+              règle non graduée et au compas la médiatrice d'un segment et la
+              figure symétrique d'une figure donnée par rapport à une droite.
+
+      # ── La proportionnalité (géométrie) ───────────────────────────────────
+      - code: EGE-PROP
+        name: La proportionnalité
+        learning_objectives:
+          # Eduscol n'introduit pas ce thème en CM1
+          - code: CY3-MAT-EGE-PROP-CM2-01
+            level: cm2
+            period: null
+            description: |
+              Agrandir ou réduire une figure dans un rapport simple donné
+              (par exemple × 1/2, × 2, × 3).
+          - code: CY3-MAT-EGE-PROP-6E-01
+            level: sixieme
+            period: null
+            description: |
+              Agrandir ou réduire une figure dans un rapport plus complexe
+              qu'au CM2 (par exemple × 3/2 ou × 3/4). Reproduire une figure à
+              une échelle donnée. Compléter un agrandissement ou une réduction
+              à partir de la connaissance d'une des mesures agrandie ou réduite.

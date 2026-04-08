@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ReferentielCycle3MathSeeder::class,
+            GameSeeder::class,
         ]);
     }
 }

@@ -31,4 +31,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/play/play.component').then((m) => m.PlayComponent),
   },
+  {
+    path: 'play/symmetry-spotter',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/play/symmetry-spotter/symmetry-spotter.component').then(
+        (m) => m.SymmetrySpotterComponent,
+      ),
+  },
 ];

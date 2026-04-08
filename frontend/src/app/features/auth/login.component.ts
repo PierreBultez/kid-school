@@ -62,7 +62,7 @@ export class LoginComponent {
     this.error.set(null);
     try {
       await this.auth.login(this.form.getRawValue());
-      await this.router.navigateByUrl('/dashboard');
+      await this.router.navigateByUrl('/profiles');
     } catch {
       this.error.set('Identifiants invalides.');
     } finally {

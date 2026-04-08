@@ -94,6 +94,7 @@ export class RegisterComponent {
     try {
       await this.auth.register(this.form.getRawValue());
       await this.router.navigateByUrl('/dashboard');
+      // après register, on envoie sur le dashboard pour créer les profils enfants
     } catch {
       this.error.set("Impossible de créer le compte. Vérifiez les informations saisies.");
     } finally {

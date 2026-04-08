@@ -86,12 +86,22 @@ it('updates a child of the authenticated family', function () {
     expect($child->fresh()->grade_level)->toBe('CM2');
 });
 
-it('selects an active child profile in session', function () {
+it('selects an active child profile on the user', function () {
     $parent = makeParentWithFamily();
     $child = Child::factory()->create(['family_id' => $parent->family->id]);
 
     $response = $this->actingAs($parent)->postJson("/api/children/{$child->id}/select");
 
     $response->assertOk()->assertJson(['active_child_id' => $child->id]);
-    expect(session('active_child_id'))->toBe($child->id);
+    expect($parent->fresh()->active_child_id)->toBe($child->id);
+});
+
+it('forbids selecting a child from another family', function () {
+    $parent = makeParentWithFamily();
+    $other = makeParentWithFamily();
+    $otherChild = Child::factory()->create(['family_id' => $other->family->id]);
+
+    $this->actingAs($parent)
+        ->postJson("/api/children/{$otherChild->id}/select")
+        ->assertForbidden();
 });

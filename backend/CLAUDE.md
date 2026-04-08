@@ -11,8 +11,10 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 - php - 8.4
 - filament/filament (FILAMENT) - v5
+- laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
+- laravel/sanctum (SANCTUM) - v4
 - livewire/livewire (LIVEWIRE) - v4
 - laravel/boost (BOOST) - v2
 - laravel/mcp (MCP) - v0

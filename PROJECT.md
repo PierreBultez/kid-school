@@ -1,7 +1,7 @@
 # Projet « École » — Application de soutien scolaire pour le primaire
 
 > Document de cadrage et directives projet.
-> Version : 0.2 — 2026-04-07
+> Version : 0.3 — 2026-04-08
 > Périmètre MVP : **Mathématiques — Cycle 3 complet (CM1 / CM2 / 6ᵉ)**
 
 ---
@@ -203,14 +203,17 @@ Le détail (objectifs par niveau et par période) vit dans :
 - ✅ Schéma de base du référentiel pédagogique (6 tables : cycles, disciplines, domains, topics, learning_objectives, transversal_skills)
 - ✅ Seeder YAML idempotent → 78 objectifs cycle 3 maths en base
 - ✅ Back-office Filament complet pour naviguer/éditer le référentiel
-- ⏳ Auth famille + profils enfants (prochaine étape majeure)
-- ⏳ Squelette dashboard parent + dashboard enfant
+- ✅ Auth famille + profils enfants (Sanctum SPA + Fortify headless, rôles admin/parent/enfant)
+- ✅ Sélection de profil enfant style Netflix, CRUD enfants côté parent
+- ✅ Lockdown admin Filament (FilamentUser + canAccessPanel)
+- ⏳ Squelette dashboard parent (vue progression)
 
 ### Phase 2 — Premier mini-jeu
-- Choix PixiJS vs Phaser
-- 1 mini-jeu de calcul mental complet
-- Suivi de progression par compétence
-- XP et étoiles
+- ✅ Choix PixiJS (v8)
+- ✅ Domaine métier jeux : `games`, `game_sessions`, `objective_progress` (+ placeholders SM-2 / Elo)
+- ✅ 1er mini-jeu PixiJS complet : **Chasse à la symétrie** (objectif CY3-MAT-EGE-SYM-CM1-01)
+- ✅ Suivi de progression par objectif (formule EWMA v1, α=0.30)
+- ⏳ XP et étoiles (brique gamification)
 
 ### Phase 3 — Gamification & 2 jeux supplémentaires
 - 2 mini-jeux additionnels (fractions, géométrie)
@@ -260,7 +263,7 @@ Le détail (objectifs par niveau et par période) vit dans :
 
 ---
 
-## 11. État d'avancement (2026-04-07)
+## 11. État d'avancement (2026-04-08)
 
 ### ✅ Acquis
 1. ~~Explorer le MCP data.gouv pour les programmes officiels~~ → BO uniquement disponible en PDF, pas de référentiel structuré.
@@ -276,8 +279,28 @@ Le détail (objectifs par niveau et par période) vit dans :
    - Hook `mutateFormDataBeforeSave`/`BeforeCreate` pour garantir la cohérence avant persistance (défense en profondeur avec le CHECK DB).
    - Tables avec colonnes relationnelles (`cycle.name`), badges colorés par niveau, filtres `SelectFilter`, tooltips sur descriptions longues.
    - Tri du menu via `$navigationSort` pour suivre la hiérarchie pédagogique.
+10. ~~Auth & familles~~ → Sanctum SPA + Fortify headless, `families` / `children`, rôles `admin`/`parent`/`child`, consentement RGPD tracé, `active_child_id` sur `users` (pas en session pour éviter un bug de middleware empilé), policies, tests Pest. Admin Filament verrouillé via `FilamentUser::canAccessPanel` (admin only).
+11. ~~Angular SPA (bootstrap & features)~~ → structure `core`/`features`, guard d'auth, `ApiService` branché sur Sanctum (cookie XSRF), écrans login/register, CRUD enfants, **profile picker Netflix** (`/profiles`), route `/play` lazy-loadée, Tailwind v4.
+12. ~~Domaine métier jeux~~ → tables `games`, `game_learning_objective`, `game_sessions`, `objective_progress`. La table de progression porte déjà les colonnes placeholders **SM-2** (`sm2_ease_factor`, `sm2_interval_days`, `sm2_repetitions`, `sm2_due_at`) et **Elo** (`elo_rating`), nullables, pour pouvoir brancher ces algos plus tard sans migration lourde. Formule courante **EWMA v1** : `mastery = 0.30 × value + 0.70 × previous` encapsulée dans `ObjectiveProgress::recordAnswer()` — c'est le **seul point d'extension** quand on passera à SM-2/Elo.
+13. ~~API jeux~~ → endpoints `GET /api/games` (filtre par niveau via map `GRADE_ORDER` PHP pour éviter le tri alphabétique SQL buggé `'6EME' < 'CM1'`), `GET /api/games/{slug}`, `POST /api/game-sessions`, `POST /api/game-sessions/{id}/answer`, `POST /api/game-sessions/{id}/finish`. Middleware `child.selected` garantit qu'un enfant est actif. Tests Feature Pest : liste, 409 sans enfant actif, run complet avec vérif mastery, interdiction cross-child.
+14. ~~Premier mini-jeu PixiJS : **Chasse à la symétrie**~~ → cible l'objectif `CY3-MAT-EGE-SYM-CM1-01` (« Reconnaître qu'une figure possède un ou plusieurs axes de symétrie »). 12 figures thématiques dessinées en Pixi v8 (6 symétriques : papillon/cœur/fleur/sapin/maison/étoile, 6 asymétriques : éclair/virgule/F/G/poisson/tourbillon), sessions de 10 questions équilibrées, feedback immédiat, score avec emoji. Bootstrap Pixi via `afterNextRender` pour éviter la race condition sur le canvas host.
 
 ### ⏳ Prochaines étapes — dans cet ordre
+
+Voir aussi `docs/sessions/2026-04-08-games-and-pixi.md` pour le détail de la session et `docs/NEXT-STEPS.md` pour la file d'attente complète.
+
+#### ~~Étape 1 — Auth & familles~~ ✅ terminée
+
+#### ~~Étape 2 — Angular SPA~~ ✅ terminée
+
+#### ~~Étape 3 — Domaine jeux + 1er mini-jeu~~ ✅ terminée
+
+#### Étape 4 — Gamification minimale & dashboard parent (à venir)
+Voir `docs/NEXT-STEPS.md`.
+
+---
+
+### Archive — étapes terminées (détail historique)
 
 #### Étape 1 — Auth & familles (socle utilisateur)
 **Pourquoi en premier :** sans notion d'enfant et de famille, impossible de rattacher de la progression, donc impossible d'avancer sur le cœur métier.

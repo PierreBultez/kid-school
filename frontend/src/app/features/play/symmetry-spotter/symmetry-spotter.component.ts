@@ -20,11 +20,41 @@ import type { PuzzleLevel } from './game/puzzles';
 
 const PUZZLES_PER_SESSION = 10;
 
+interface LevelOption {
+  level: PuzzleLevel;
+  label: string;
+  grade: string;
+  description: string;
+}
+
+const LEVELS: readonly LevelOption[] = [
+  {
+    level: 'cm1',
+    label: 'CM1',
+    grade: 'CM1',
+    description: 'Figures simples, axe sur une colonne',
+  },
+  {
+    level: 'cm2',
+    label: 'CM2',
+    grade: 'CM2',
+    description: 'Grilles plus grandes, axe entre deux colonnes',
+  },
+  {
+    level: 'sixieme',
+    label: '6ème',
+    grade: '6EME',
+    description: 'Grilles larges, motifs complexes',
+  },
+];
+
 interface FinalResult {
   perfect: number;
   completed: number;
   total: number;
 }
+
+type Phase = 'choosing' | 'loading' | 'playing' | 'finished';
 
 @Component({
   selector: 'app-symmetry-spotter',
@@ -45,7 +75,7 @@ interface FinalResult {
                  focus:outline-none focus:ring-2 focus:ring-amber-300
                  focus:ring-offset-2 focus:ring-offset-slate-950"
         >
-          <span aria-hidden="true">←</span>
+          <span aria-hidden="true">&larr;</span>
           Quitter
         </a>
         <h1
@@ -59,7 +89,61 @@ interface FinalResult {
       </header>
 
       <div class="mx-auto max-w-3xl">
-        @if (loading()) {
+        <!-- PHASE: Level picker -->
+        @if (phase() === 'choosing') {
+          <div
+            class="rounded-3xl border border-white/10 bg-white/5 p-8
+                   text-center shadow-2xl backdrop-blur sm:p-10"
+          >
+            <h2 class="mb-2 text-2xl font-bold text-white sm:text-3xl">
+              Choisis ton niveau
+            </h2>
+            <p class="mb-8 text-white/60">
+              Complète les figures en cliquant sur les cases miroir.
+            </p>
+
+            <div class="mx-auto grid max-w-lg gap-4">
+              @for (opt of levelOptions; track opt.level) {
+                <button
+                  type="button"
+                  (click)="pickLevel(opt.level)"
+                  class="group relative rounded-2xl border-2 p-5 text-left
+                         transition-all duration-200
+                         focus:outline-none focus:ring-2 focus:ring-amber-300
+                         focus:ring-offset-2 focus:ring-offset-slate-950"
+                  [class]="opt.level === recommendedLevel()
+                    ? 'border-amber-400 bg-amber-400/10 shadow-lg shadow-amber-400/10'
+                    : 'border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10'"
+                >
+                  <div class="flex items-center gap-4">
+                    <span
+                      class="flex h-12 w-12 shrink-0 items-center justify-center
+                             rounded-xl text-lg font-black"
+                      [class]="opt.level === recommendedLevel()
+                        ? 'bg-amber-400 text-slate-950'
+                        : 'bg-white/10 text-white/80'"
+                    >
+                      {{ opt.label }}
+                    </span>
+                    <div>
+                      <p class="font-semibold text-white">
+                        {{ opt.description }}
+                      </p>
+                      @if (opt.level === recommendedLevel()) {
+                        <p class="mt-0.5 text-sm font-medium text-amber-300">
+                          Ton niveau
+                        </p>
+                      }
+                    </div>
+                  </div>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- PHASE: Loading -->
+        @if (phase() === 'loading') {
           <div
             class="flex h-[720px] items-center justify-center rounded-3xl
                    border border-white/10 bg-white/5 backdrop-blur"
@@ -73,66 +157,96 @@ interface FinalResult {
               <p class="text-white/70">Préparation du miroir…</p>
             </div>
           </div>
-        } @else if (finalResult(); as result) {
-          <div
-            class="rounded-3xl border border-white/10 bg-white/5 p-10
-                   text-center shadow-2xl backdrop-blur"
-          >
-            <div class="mb-4 text-6xl" aria-hidden="true">{{ endEmoji() }}</div>
-            <h2 class="mb-2 text-3xl font-black text-white">{{ endTitle() }}</h2>
-            <p class="mb-6 text-lg text-white/80">
-              Tu as réussi
-              <strong class="text-amber-300">{{ result.perfect }}</strong>
-              puzzles parfaits sur
-              <strong class="text-amber-300">{{ result.total }}</strong>.
-            </p>
-            <div
-              class="mx-auto mb-8 flex max-w-xs items-center justify-center gap-2
-                     text-4xl"
-              aria-label="Score sur 3 étoiles"
-            >
-              @for (i of [0, 1, 2]; track i) {
-                <span
-                  [class.opacity-20]="i >= starCount()"
-                  class="transition-transform duration-300 hover:scale-110"
-                >
-                  ★
-                </span>
-              }
-            </div>
-            <div class="flex flex-wrap justify-center gap-3">
-              <button
-                type="button"
-                (click)="restart()"
-                class="rounded-full bg-gradient-to-r from-amber-400 to-pink-500
-                       px-6 py-3 font-bold text-slate-950 shadow-lg
-                       transition hover:scale-105
-                       focus:outline-none focus:ring-2 focus:ring-amber-300
-                       focus:ring-offset-2 focus:ring-offset-slate-950"
-              >
-                Rejouer
-              </button>
-              <a
-                routerLink="/play"
-                class="rounded-full border border-white/20 bg-white/5 px-6 py-3
-                       font-semibold text-white/80 transition hover:bg-white/10
-                       hover:text-white
-                       focus:outline-none focus:ring-2 focus:ring-amber-300
-                       focus:ring-offset-2 focus:ring-offset-slate-950"
-              >
-                Autres jeux
-              </a>
-            </div>
-          </div>
         }
 
+        <!-- PHASE: Finished -->
+        @if (phase() === 'finished') {
+          @if (finalResult(); as result) {
+            <div
+              class="rounded-3xl border border-white/10 bg-white/5 p-10
+                     text-center shadow-2xl backdrop-blur"
+            >
+              <div class="mb-4 text-6xl" aria-hidden="true">{{ endEmoji() }}</div>
+              <h2 class="mb-2 text-3xl font-black text-white">{{ endTitle() }}</h2>
+              <p class="mb-6 text-lg text-white/80">
+                Tu as réussi
+                <strong class="text-amber-300">{{ result.perfect }}</strong>
+                puzzles parfaits sur
+                <strong class="text-amber-300">{{ result.total }}</strong>.
+              </p>
+              <div
+                class="mx-auto mb-8 flex max-w-xs items-center justify-center gap-2
+                       text-4xl"
+                aria-label="Score sur 3 étoiles"
+              >
+                @for (i of [0, 1, 2]; track i) {
+                  <span
+                    [class.opacity-20]="i >= starCount()"
+                    class="transition-transform duration-300 hover:scale-110"
+                  >
+                    ★
+                  </span>
+                }
+              </div>
+              <div class="flex flex-wrap justify-center gap-3">
+                <button
+                  type="button"
+                  (click)="replay()"
+                  class="rounded-full bg-gradient-to-r from-amber-400 to-pink-500
+                         px-6 py-3 font-bold text-slate-950 shadow-lg
+                         transition hover:scale-105
+                         focus:outline-none focus:ring-2 focus:ring-amber-300
+                         focus:ring-offset-2 focus:ring-offset-slate-950"
+                >
+                  Rejouer
+                </button>
+                @if (nextLevel(); as next) {
+                  <button
+                    type="button"
+                    (click)="pickLevel(next.level)"
+                    class="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500
+                           px-6 py-3 font-bold text-white shadow-lg
+                           transition hover:scale-105
+                           focus:outline-none focus:ring-2 focus:ring-indigo-300
+                           focus:ring-offset-2 focus:ring-offset-slate-950"
+                  >
+                    Niveau {{ next.label }}
+                  </button>
+                }
+                <button
+                  type="button"
+                  (click)="backToLevels()"
+                  class="rounded-full border border-white/20 bg-white/5 px-6 py-3
+                         font-semibold text-white/80 transition hover:bg-white/10
+                         hover:text-white
+                         focus:outline-none focus:ring-2 focus:ring-amber-300
+                         focus:ring-offset-2 focus:ring-offset-slate-950"
+                >
+                  Changer de niveau
+                </button>
+                <a
+                  routerLink="/play"
+                  class="rounded-full border border-white/20 bg-white/5 px-6 py-3
+                         font-semibold text-white/80 transition hover:bg-white/10
+                         hover:text-white
+                         focus:outline-none focus:ring-2 focus:ring-amber-300
+                         focus:ring-offset-2 focus:ring-offset-slate-950"
+                >
+                  Autres jeux
+                </a>
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Canvas host: visible only during playing phase -->
         <div
           #canvasHost
           class="mx-auto flex justify-center"
-          [class.hidden]="loading() || finalResult() !== null"
+          [class.hidden]="phase() !== 'playing'"
         ></div>
 
-        @if (!loading() && finalResult() === null) {
+        @if (phase() === 'playing') {
           <p class="mt-6 text-center text-sm text-white/60">
             Clique sur les cases qui complètent la figure par symétrie autour du rayon doré.
           </p>
@@ -152,7 +266,7 @@ interface FinalResult {
   `,
 })
 export class SymmetrySpotterComponent {
-  protected readonly PUZZLES_PER_SESSION = PUZZLES_PER_SESSION;
+  protected readonly levelOptions = LEVELS;
 
   private readonly authService = inject(AuthService);
   private readonly gamesService = inject(GamesService);
@@ -161,20 +275,33 @@ export class SymmetrySpotterComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly canvasHost = viewChild<ElementRef<HTMLDivElement>>('canvasHost');
 
-  protected readonly loading = signal(true);
+  protected readonly phase = signal<Phase>('choosing');
   protected readonly error = signal<string | null>(null);
   protected readonly finalResult = signal<FinalResult | null>(null);
+  private readonly selectedLevel = signal<PuzzleLevel>('cm1');
 
   private game: Game | null = null;
   private session: GameSession | null = null;
   private mirrorGame: MirrorGame | null = null;
-  private puzzleLevel: PuzzleLevel = 'cm1';
 
   private static readonly GRADE_TO_LEVEL: Record<string, PuzzleLevel> = {
     CM1: 'cm1',
     CM2: 'cm2',
     '6EME': 'sixieme',
   };
+
+  /** The child's grade mapped to a puzzle level — used to highlight "ton niveau". */
+  protected readonly recommendedLevel = computed<PuzzleLevel>(() => {
+    const grade = this.authService.currentUser()?.active_child?.grade_level;
+    return SymmetrySpotterComponent.GRADE_TO_LEVEL[grade ?? ''] ?? 'cm1';
+  });
+
+  /** Next level after the one just played, if any. */
+  protected readonly nextLevel = computed<LevelOption | null>(() => {
+    const current = this.selectedLevel();
+    const idx = LEVELS.findIndex((l) => l.level === current);
+    return idx >= 0 && idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+  });
 
   protected readonly starCount = computed(() => {
     const r = this.finalResult();
@@ -207,7 +334,7 @@ export class SymmetrySpotterComponent {
       return;
     }
     afterNextRender(() => {
-      void this.bootstrap();
+      void this.fetchGame();
     });
     this.destroyRef.onDestroy(() => {
       this.mirrorGame?.destroy();
@@ -215,20 +342,31 @@ export class SymmetrySpotterComponent {
     });
   }
 
-  private async bootstrap(): Promise<void> {
+  /** Pre-fetch the game record so the level picker doesn't need to wait. */
+  private async fetchGame(): Promise<void> {
     try {
-      // Determine the child's grade to select the right puzzle set.
-      const grade = this.authService.currentUser()?.active_child?.grade_level;
-      this.puzzleLevel = SymmetrySpotterComponent.GRADE_TO_LEVEL[grade ?? ''] ?? 'cm1';
-
       this.game = await firstValueFrom(this.gamesService.get('symmetry-spotter'));
-      this.session = await firstValueFrom(this.gamesService.startSession(this.game.id));
-      await this.launchGame();
-      this.loading.set(false);
     } catch {
-      this.loading.set(false);
-      this.error.set('Impossible de lancer le jeu. As-tu sélectionné un profil ?');
+      this.error.set('Impossible de charger le jeu. As-tu sélectionné un profil ?');
       setTimeout(() => this.router.navigateByUrl('/play'), 1200);
+    }
+  }
+
+  protected async pickLevel(level: PuzzleLevel): Promise<void> {
+    this.selectedLevel.set(level);
+    this.finalResult.set(null);
+    this.phase.set('loading');
+    this.error.set(null);
+    try {
+      if (!this.game) {
+        this.game = await firstValueFrom(this.gamesService.get('symmetry-spotter'));
+      }
+      this.session = await firstValueFrom(this.gamesService.startSession(this.game.id));
+      // Let Angular render the canvasHost into the DOM before launching Pixi.
+      setTimeout(() => void this.launchGame(), 0);
+    } catch {
+      this.phase.set('choosing');
+      this.error.set('Impossible de lancer le jeu.');
     }
   }
 
@@ -236,19 +374,19 @@ export class SymmetrySpotterComponent {
     const host = this.canvasHost()?.nativeElement;
     if (!host) return;
 
-    // Clean previous instance if any.
     this.mirrorGame?.destroy();
 
     this.mirrorGame = new MirrorGame({
       host,
       puzzleCount: PUZZLES_PER_SESSION,
-      level: this.puzzleLevel,
+      level: this.selectedLevel(),
       callbacks: {
         onAnswer: (correct) => this.handleAnswer(correct),
         onFinished: (result) => this.handleFinished(result),
       },
     });
     await this.mirrorGame.start();
+    this.phase.set('playing');
   }
 
   private static readonly LEVEL_CODE_FRAGMENT: Record<PuzzleLevel, string> = {
@@ -259,50 +397,38 @@ export class SymmetrySpotterComponent {
 
   private handleAnswer(correct: boolean): void {
     if (!this.session || !this.game) return;
-    // Match the objective whose code contains the child's level fragment
-    // (e.g. 'CY3-MAT-EGE-SYM-CM2-01' for CM2).
-    const fragment = SymmetrySpotterComponent.LEVEL_CODE_FRAGMENT[this.puzzleLevel];
-    const objective = this.game.learning_objectives.find((o) =>
-      o.code.includes(`-${fragment}-`),
-    ) ?? this.game.learning_objectives[0];
+    const fragment =
+      SymmetrySpotterComponent.LEVEL_CODE_FRAGMENT[this.selectedLevel()];
+    const objective =
+      this.game.learning_objectives.find((o) =>
+        o.code.includes(`-${fragment}-`),
+      ) ?? this.game.learning_objectives[0];
     if (!objective) return;
     this.gamesService
       .answer(this.session.id, objective.id, correct)
-      .subscribe({
-        error: () => {
-          // Silent failure: the game continues even if the API hiccups.
-        },
-      });
+      .subscribe({ error: () => {} });
   }
 
   private handleFinished(result: FinalResult): void {
     this.finalResult.set(result);
+    this.phase.set('finished');
     if (this.session) {
-      this.gamesService.finish(this.session.id).subscribe({
-        error: () => {
-          /* ignore */
-        },
-      });
+      this.gamesService
+        .finish(this.session.id)
+        .subscribe({ error: () => {} });
     }
   }
 
-  protected async restart(): Promise<void> {
-    if (!this.game) return;
+  /** Replay the same level. */
+  protected async replay(): Promise<void> {
+    await this.pickLevel(this.selectedLevel());
+  }
+
+  /** Go back to the level picker. */
+  protected backToLevels(): void {
+    this.mirrorGame?.destroy();
+    this.mirrorGame = null;
     this.finalResult.set(null);
-    this.loading.set(true);
-    try {
-      this.session = await firstValueFrom(
-        this.gamesService.startSession(this.game.id),
-      );
-      // Force Angular to render the canvasHost back into the DOM before we
-      // re-create the Pixi game against it.
-      setTimeout(async () => {
-        await this.launchGame();
-        this.loading.set(false);
-      });
-    } catch {
-      this.loading.set(false);
-      this.error.set('Impossible de redémarrer la session.');
-    }
+    this.phase.set('choosing');
   }
 }

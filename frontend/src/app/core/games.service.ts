@@ -6,6 +6,8 @@ export interface LearningObjective {
   id: number;
   code: string;
   description: string;
+  mastery?: number;
+  attempts?: number;
 }
 
 export interface Game {

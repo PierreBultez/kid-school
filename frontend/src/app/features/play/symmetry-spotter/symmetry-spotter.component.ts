@@ -48,6 +48,16 @@ const LEVELS: readonly LevelOption[] = [
   },
 ];
 
+/** Mastery threshold (0-100) required on each objective to unlock insane. */
+const INSANE_MASTERY_THRESHOLD = 80;
+
+/** Codes of the 3 objectives that must be mastered. */
+const REQUIRED_OBJECTIVE_CODES = [
+  'CY3-MAT-EGE-SYM-CM1-01',
+  'CY3-MAT-EGE-SYM-CM2-01',
+  'CY3-MAT-EGE-SYM-6E-01',
+];
+
 interface FinalResult {
   perfect: number;
   completed: number;
@@ -138,6 +148,55 @@ type Phase = 'choosing' | 'loading' | 'playing' | 'finished';
                   </div>
                 </button>
               }
+
+              <!-- Insane level — locked/unlocked -->
+              <button
+                type="button"
+                [disabled]="!insaneUnlocked()"
+                (click)="insaneUnlocked() && pickLevel('insane')"
+                class="group relative rounded-2xl border-2 p-5 text-left
+                       transition-all duration-200
+                       focus:outline-none focus:ring-2 focus:ring-offset-2
+                       focus:ring-offset-slate-950"
+                [class]="insaneUnlocked()
+                  ? 'border-fuchsia-400 bg-fuchsia-400/10 shadow-lg shadow-fuchsia-400/10 hover:bg-fuchsia-400/20 focus:ring-fuchsia-300'
+                  : 'border-white/5 bg-white/[0.02] opacity-60 cursor-not-allowed focus:ring-white/20'"
+              >
+                <div class="flex items-center gap-4">
+                  <span
+                    class="flex h-12 w-12 shrink-0 items-center justify-center
+                           rounded-xl text-lg font-black"
+                    [class]="insaneUnlocked()
+                      ? 'bg-fuchsia-500 text-white'
+                      : 'bg-white/5 text-white/30'"
+                  >
+                    @if (insaneUnlocked()) {
+                      <span aria-hidden="true">!</span>
+                    } @else {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                           fill="currentColor" class="h-6 w-6" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                              d="M10 1a4.5 4.5 0 0 0-4.5 4.5V9H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-.5V5.5A4.5 4.5 0 0 0 10 1Zm3 8V5.5a3 3 0 1 0-6 0V9h6Z"
+                              clip-rule="evenodd" />
+                      </svg>
+                    }
+                  </span>
+                  <div>
+                    <p [class]="insaneUnlocked() ? 'font-semibold text-white' : 'font-semibold text-white/40'">
+                      Grilles géantes, motifs extrêmes
+                    </p>
+                    <p [class]="insaneUnlocked()
+                      ? 'mt-0.5 text-sm font-medium text-fuchsia-300'
+                      : 'mt-0.5 text-sm text-white/30'">
+                      @if (insaneUnlocked()) {
+                        Débloqué !
+                      } @else {
+                        Maîtrise les 3 niveaux pour débloquer
+                      }
+                    </p>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         }
@@ -279,6 +338,7 @@ export class SymmetrySpotterComponent {
   protected readonly error = signal<string | null>(null);
   protected readonly finalResult = signal<FinalResult | null>(null);
   private readonly selectedLevel = signal<PuzzleLevel>('cm1');
+  private readonly objectiveMastery = signal<Record<string, number>>({});
 
   private game: Game | null = null;
   private session: GameSession | null = null;
@@ -296,11 +356,25 @@ export class SymmetrySpotterComponent {
     return SymmetrySpotterComponent.GRADE_TO_LEVEL[grade ?? ''] ?? 'cm1';
   });
 
+  /** True when the child has mastered all 3 school levels. */
+  protected readonly insaneUnlocked = computed(() => {
+    const mastery = this.objectiveMastery();
+    return REQUIRED_OBJECTIVE_CODES.every(
+      (code) => (mastery[code] ?? 0) >= INSANE_MASTERY_THRESHOLD,
+    );
+  });
+
   /** Next level after the one just played, if any. */
   protected readonly nextLevel = computed<LevelOption | null>(() => {
     const current = this.selectedLevel();
+    if (current === 'insane') return null;
     const idx = LEVELS.findIndex((l) => l.level === current);
-    return idx >= 0 && idx < LEVELS.length - 1 ? LEVELS[idx + 1] : null;
+    if (idx >= 0 && idx < LEVELS.length - 1) return LEVELS[idx + 1];
+    // After last school level, offer insane if unlocked
+    if (idx === LEVELS.length - 1 && this.insaneUnlocked()) {
+      return { level: 'insane', label: '!!!', grade: '', description: 'Grilles géantes, motifs extrêmes' };
+    }
+    return null;
   });
 
   protected readonly starCount = computed(() => {
@@ -342,10 +416,15 @@ export class SymmetrySpotterComponent {
     });
   }
 
-  /** Pre-fetch the game record so the level picker doesn't need to wait. */
+  /** Pre-fetch the game record and extract mastery data for unlock logic. */
   private async fetchGame(): Promise<void> {
     try {
       this.game = await firstValueFrom(this.gamesService.get('symmetry-spotter'));
+      const mastery: Record<string, number> = {};
+      for (const obj of this.game.learning_objectives) {
+        mastery[obj.code] = obj.mastery ?? 0;
+      }
+      this.objectiveMastery.set(mastery);
     } catch {
       this.error.set('Impossible de charger le jeu. As-tu sélectionné un profil ?');
       setTimeout(() => this.router.navigateByUrl('/play'), 1200);
@@ -393,6 +472,7 @@ export class SymmetrySpotterComponent {
     cm1: 'CM1',
     cm2: 'CM2',
     sixieme: '6E',
+    insane: '6E',
   };
 
   private handleAnswer(correct: boolean): void {
@@ -415,8 +495,24 @@ export class SymmetrySpotterComponent {
     if (this.session) {
       this.gamesService
         .finish(this.session.id)
-        .subscribe({ error: () => {} });
+        .subscribe({
+          next: () => void this.refreshMastery(),
+          error: () => {},
+        });
     }
+  }
+
+  /** Re-fetch game data to pick up updated mastery scores. */
+  private async refreshMastery(): Promise<void> {
+    try {
+      const game = await firstValueFrom(this.gamesService.get('symmetry-spotter'));
+      this.game = game;
+      const mastery: Record<string, number> = {};
+      for (const obj of game.learning_objectives) {
+        mastery[obj.code] = obj.mastery ?? 0;
+      }
+      this.objectiveMastery.set(mastery);
+    } catch { /* non-critical */ }
   }
 
   /** Replay the same level. */

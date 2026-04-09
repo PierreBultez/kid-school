@@ -14,7 +14,7 @@
  */
 
 export type PuzzleAxis = 'vertical' | 'horizontal';
-export type PuzzleLevel = 'cm1' | 'cm2' | 'sixieme';
+export type PuzzleLevel = 'cm1' | 'cm2' | 'sixieme' | 'insane';
 export type PuzzleGrid = number[][]; // [row][col], 0 = empty, 1..9 = palette index
 
 export interface Puzzle {
@@ -111,9 +111,9 @@ const P_BUTTERFLY: Puzzle = {
   difficulty: 1,
   level: 'cm1',
   grid: parsePattern([
-    'V . . Y . . V',
+    'V . . M . . V',
     'V V . Y . V V',
-    'V V V Y V V V',
+    'V P V Y V P V',
     '. V V Y V V .',
     '. . . Y . . .',
   ]),
@@ -121,15 +121,15 @@ const P_BUTTERFLY: Puzzle = {
 
 const P_FLOWER: Puzzle = {
   name: 'Fleur',
-  axis: 'horizontal',
+  axis: 'vertical',
   difficulty: 1,
   level: 'cm1',
   grid: parsePattern([
-    '. . Y . .',
-    '. P Y P .',
-    'P P Y P P',
-    '. P Y P .',
-    '. . Y . .',
+    'Y . Y . Y',
+    'Y O Y O Y',
+    'Y Y Y Y Y',
+    '. . G . .',
+    '. . G . .',
   ]),
 };
 
@@ -179,20 +179,6 @@ const P_HOUSE: Puzzle = {
   ]),
 };
 
-const P_CRYSTAL: Puzzle = {
-  name: 'Cristal',
-  axis: 'horizontal',
-  difficulty: 2,
-  level: 'cm1',
-  grid: parsePattern([
-    '. . B . .',
-    '. B V B .',
-    'B V V V B',
-    '. B V B .',
-    '. . B . .',
-  ]),
-};
-
 const P_CROWN: Puzzle = {
   name: 'Couronne',
   axis: 'vertical',
@@ -201,7 +187,7 @@ const P_CROWN: Puzzle = {
   grid: parsePattern([
     'Y . Y . Y . Y',
     'Y Y Y R Y Y Y',
-    'Y Y Y Y Y Y Y',
+    'Y . Y Y Y . Y',
     'Y Y Y Y Y Y Y',
     '. . . . . . .',
   ]),
@@ -216,7 +202,7 @@ const P_MUSHROOM: Puzzle = {
     '. . R R R . .',
     '. R R W R R .',
     'R R W R W R R',
-    'R R R R R R R',
+    'W R R R R R W',
     '. . W W W . .',
     '. . W W W . .',
     '. . W W W . .',
@@ -236,22 +222,6 @@ const P_RAINBOW_BUTTERFLY: Puzzle = {
     'G B B . Y . B B G',
     'B V V . Y . V V B',
     '. . . . Y . . . .',
-  ]),
-};
-
-const P_LOTUS: Puzzle = {
-  name: 'Lotus',
-  axis: 'horizontal',
-  difficulty: 3,
-  level: 'cm1',
-  grid: parsePattern([
-    '. . P . .',
-    '. P P P .',
-    'P P P P P',
-    'G G Y G G',
-    'P P P P P',
-    '. P P P .',
-    '. . P . .',
   ]),
 };
 
@@ -290,37 +260,20 @@ const P_CASTLE: Puzzle = {
   ]),
 };
 
-const P_VASE: Puzzle = {
-  name: 'Vase',
-  axis: 'horizontal',
-  difficulty: 1,
-  level: 'cm2',
-  grid: parsePattern([
-    '. . V . .',
-    '. V V V .',
-    'V V P V V',
-    'V P P P V',
-    'V P P P V',
-    'V V P V V',
-    '. V V V .',
-    '. . V . .',
-  ]),
-};
-
 const P_DIAMOND_CM2: Puzzle = {
   name: 'Diamant',
   axis: 'vertical',
-  difficulty: 2,
+  difficulty: 3,
   level: 'cm2',
   grid: parsePattern([
+    '. . B B B B . .',
+    '. B W W W W B .',
+    'B B B B B B B B',
+    'B W W W W W W B',
+    '. B W W W W B .',
+    '. . B W W B . .',
     '. . . B B . . .',
-    '. . B V V B . .',
-    '. B V V V V B .',
-    'B V V V V V V B',
-    'B V V V V V V B',
-    '. B V V V V B .',
-    '. . B V V B . .',
-    '. . . B B . . .',
+    '. . . . . . . .',
   ]),
 };
 
@@ -341,20 +294,39 @@ const P_TEMPLE: Puzzle = {
   ]),
 };
 
+const P_ALIEN: Puzzle = {
+  name: 'Alien',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'cm2',
+  grid: parsePattern([
+    '. . . V V . . .',
+    '. . V V V V . .',
+    '. V V V V V V .',
+    'V V . V V . V V',
+    'V V V V V V V V',
+    '. . V . . V . .',
+    '. V . V V . V .',
+    'V . . . . . . V',
+  ]),
+};
+
 const P_SHIELD: Puzzle = {
   name: 'Bouclier',
   axis: 'vertical',
   difficulty: 3,
   level: 'cm2',
   grid: parsePattern([
-    '. . . . G G . . . .',
-    '. . G G B B G G . .',
-    '. G B B Y Y B B G .',
-    'G B Y Y R R Y Y B G',
-    'G B Y Y R R Y Y B G',
-    '. G B B Y Y B B G .',
-    '. . G G B B G G . .',
-    '. . . . G G . . . .',
+    '. . . G G . . .',
+    '. . G B B G . .',
+    '. G B Y Y B G .',
+    '. G B Y Y B G .',
+    'G B Y R R Y B G',
+    'G B Y R R Y B G',
+    '. G B Y Y B G .',
+    '. G B Y Y B G .',
+    '. . G B B G . .',
+    '. . . G G . . .',
   ]),
 };
 
@@ -409,6 +381,40 @@ const P_ANCHOR: Puzzle = {
   ]),
 };
 
+const P_ROBOT: Puzzle = {
+  name: 'Robot',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'cm2',
+  grid: parsePattern([
+    '. G G G G G G .',
+    'G . . . . . . G',
+    'G . R . . R . G',
+    'G . . . . . . G',
+    'G . G G G G . G',
+    'G . G . . G . G',
+    'G . . . . . . G',
+    '. G G G G G G .',
+  ]),
+};
+
+const P_FUSEE: Puzzle = {
+  name: 'Fusée',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'cm2',
+  grid: parsePattern([
+    '. . . Y Y . . .',
+    '. . Y R R Y . .',
+    '. Y R R R R Y .',
+    '. Y R R R R Y .',
+    'Y Y R R R R Y Y',
+    'Y . Y Y Y Y . Y',
+    'Y . . R R . . Y',
+    '. . Y . . Y . .',
+  ]),
+};
+
 // --- 6ème puzzles — large grids, complex patterns, consolidation ---------------
 // Larger boards force the child to think about distances more carefully and
 // solidify the mental model of the médiatrice (perpendicular bisector).
@@ -440,7 +446,7 @@ const P_GALAXY: Puzzle = {
   level: 'sixieme',
   grid: parsePattern([
     '. . . . . V . . . . .',
-    '. . . . V B V . . . .',
+    '. B . . V B V . . B .',
     '. . . V B . B V . . .',
     '. . V B . . . B V . .',
     '. V B . . . . . B V .',
@@ -448,25 +454,88 @@ const P_GALAXY: Puzzle = {
     '. V B . . . . . B V .',
     '. . V B . . . B V . .',
     '. . . V B . B V . . .',
-    '. . . . V B V . . . .',
+    '. B . . V B V . . B .',
     '. . . . . V . . . . .',
+  ]),
+};
+
+const P_BURGER: Puzzle = {
+  name: 'Le Burger',
+  axis: 'vertical',
+  difficulty: 2,
+  level: 'sixieme',
+  grid: parsePattern([
+    '. . . . . . . . . . .',
+    '. . . O O O O O . . .',
+    '. . O O O W O O O . .',
+    '. O O W O O O W O O .',
+    '. G G G G G G G G G .',
+    '. . R R Y Y Y R R . .',
+    '. M M M M M M M M M .',
+    '. M M M M M M M M M .',
+    '. . O O O O O O O . .',
+    '. . . O O O O O . . .',
+    '. . . . . . . . . . .',
+  ]),
+};
+
+const P_PROCESSOR: Puzzle = {
+  name: 'Le Processeur',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'sixieme',
+  grid: parsePattern([
+    '. G . G . G . G . G .',
+    'G G G G G G G G G G G',
+    '. G M M M M M M M G .',
+    'G G M Y Y Y Y Y M G G',
+    '. G M Y M M M Y M G .',
+    'G G M Y M Y M Y M G G',
+    '. G M Y M M M Y M G .',
+    'G G M Y Y Y Y Y M G G',
+    '. G M M M M M M M G .',
+    'G G G G G G G G G G G',
+    '. G . G . G . G . G .',
+  ]),
+};
+
+const P_CRAB: Puzzle = {
+  name: 'Le Crabe',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'sixieme',
+  grid: parsePattern([
+    'R . . . . . . . . . R',
+    '. R R . . . . . R R .',
+    '. . R R . . . R R . .',
+    '. . . R R R R R . . .',
+    '. R R R W R W R R R .',
+    'R R R R R R R R R R R',
+    'R R . R R R R R . R R',
+    'R . . . R R R . . . R',
+    '. . . R . . . R . . .',
+    '. . R . . . . . R . .',
+    '. . . . . . . . . . .',
   ]),
 };
 
 const P_PYRAMID: Puzzle = {
   name: 'Pyramide',
-  axis: 'horizontal',
-  difficulty: 2,
+  axis: 'vertical',
+  difficulty: 3,
   level: 'sixieme',
   grid: parsePattern([
-    '. . . . O O . . . .',
-    '. . . O O O O . . .',
-    '. . O O Y Y O O . .',
-    '. O O Y Y Y Y O O .',
-    '. O O Y Y Y Y O O .',
-    '. . O O Y Y O O . .',
-    '. . . O O O O . . .',
-    '. . . . O O . . . .',
+    '. . . . . . . . . . .',
+    '. . . . . O . . . . .',
+    '. . . . O Y O . . . .',
+    '. . . O O Y O O . . .',
+    '. . . O Y Y Y O . . .',
+    '. . O O Y Y Y O O . .',
+    '. . O Y Y Y Y Y O . .',
+    '. O O Y Y Y Y Y O O .',
+    '. O Y Y Y . Y Y Y O .',
+    'O O O Y Y . Y Y O O O',
+    'O O O O O . O O O O O',
   ]),
 };
 
@@ -545,6 +614,164 @@ const P_TOTEM: Puzzle = {
   ]),
 };
 
+// --- Insane puzzles — maximum grid, extreme complexity -----------------------
+// These puzzles use 13–15 columns and dense multi-color patterns. They are
+// unlocked only after mastering all three school levels.
+
+const P_MANDALA: Puzzle = {
+  name: 'Mandala',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    '. . . . . . R . . . . . .',
+    '. . . . . R O R . . . . .',
+    '. . . . R O Y O R . . . .',
+    '. . . R O Y G Y O R . . .',
+    '. . R O Y G B G Y O R . .',
+    '. R O Y G B V B G Y O R .',
+    'R O Y G B V P V B G Y O R',
+    '. R O Y G B V B G Y O R .',
+    '. . R O Y G B G Y O R . .',
+    '. . . R O Y G Y O R . . .',
+    '. . . . R O Y O R . . . .',
+    '. . . . . R O R . . . . .',
+    '. . . . . . R . . . . . .',
+  ]),
+};
+
+const P_PHOENIX: Puzzle = {
+  name: 'Phénix',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    '. . . . . . R . . . . . .',
+    '. . . . . R R R . . . . .',
+    '. . . . R O R O R . . . .',
+    '. . . R O O R O O R . . .',
+    '. . R O . O R O . O R . .',
+    '. R . . . . R . . . . R .',
+    'R . . . . Y R Y . . . . R',
+    'R . . . Y Y R Y Y . . . R',
+    '. R . Y Y . R . Y Y . R .',
+    '. . R Y . . R . . Y R . .',
+    '. . . R . . R . . R . . .',
+    '. . . . R . R . R . . . .',
+    '. . . . . R R R . . . . .',
+  ]),
+};
+
+const P_AZTEC: Puzzle = {
+  name: 'Aztèque',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    'G . . . . . G . . . . . G',
+    'G G . . . G Y G . . . G G',
+    'G . G . G Y O Y G . G . G',
+    '. . . G Y O R O Y G . . .',
+    '. . G Y O R R R O Y G . .',
+    '. G Y O R R M R R O Y G .',
+    'G Y O R R M W M R R O Y G',
+    '. G Y O R R M R R O Y G .',
+    '. . G Y O R R R O Y G . .',
+    '. . . G Y O R O Y G . . .',
+    'G . G . G Y O Y G . G . G',
+    'G G . . . G Y G . . . G G',
+    'G . . . . . G . . . . . G',
+  ]),
+};
+
+const P_LABYRINTH: Puzzle = {
+  name: 'Labyrinthe',
+  axis: 'horizontal',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    'B B B B B B B B B B B B B B B',
+    'B . . . . . . . . . . . . . B',
+    'B . B B B . B B B . B B B . B',
+    'B . B . . . B . . . . . B . B',
+    'B . B . B B B . B B B . B . B',
+    'B . . . . . . . . . . . . . B',
+    'B B B . B . B W B . B . B B B',
+    'B . . . . . . . . . . . . . B',
+    'B . B . B B B . B B B . B . B',
+    'B . B . . . B . . . . . B . B',
+    'B . B B B . B B B . B B B . B',
+    'B . . . . . . . . . . . . . B',
+    'B B B B B B B B B B B B B B B',
+  ]),
+};
+
+const P_STAINED_GLASS: Puzzle = {
+  name: 'Vitrail',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    '. . . . . . V . . . . . .',
+    '. . . . . V B V . . . . .',
+    '. . . . V B R B V . . . .',
+    '. . . V . B R B . V . . .',
+    '. . V . O . R . O . V . .',
+    '. V . O Y O R O Y O . V .',
+    'V B R . O Y G Y O . R B V',
+    '. V . O Y O R O Y O . V .',
+    '. . V . O . R . O . V . .',
+    '. . . V . B R B . V . . .',
+    '. . . . V B R B V . . . .',
+    '. . . . . V B V . . . . .',
+    '. . . . . . V . . . . . .',
+  ]),
+};
+
+const P_QUILT: Puzzle = {
+  name: 'Patchwork',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    'R R R . B B B . B B B . R R R',
+    'R . R . B . B . B . B . R . R',
+    'R R R . B B B . B B B . R R R',
+    '. . . . . . . . . . . . . . .',
+    'G G G . Y Y Y . Y Y Y . G G G',
+    'G . G . Y . Y . Y . Y . G . G',
+    'G G G . Y Y Y . Y Y Y . G G G',
+    '. . . . . . . . . . . . . . .',
+    'R R R . B B B . B B B . R R R',
+    'R . R . B . B . B . B . R . R',
+    'R R R . B B B . B B B . R R R',
+    '. . . . . . . . . . . . . . .',
+    'G G G . Y Y Y . Y Y Y . G G G',
+  ]),
+};
+
+const P_FRACTAL: Puzzle = {
+  name: 'Fractale',
+  axis: 'vertical',
+  difficulty: 3,
+  level: 'insane',
+  grid: parsePattern([
+    '. . . . . . P . . . . . .',
+    '. . . . . P . P . . . . .',
+    '. . . . P . P . P . . . .',
+    '. . . P . P V P . P . . .',
+    '. . P . P V . V P . P . .',
+    '. P . P V . B . V P . P .',
+    'P . P V . B W B . V P . P',
+    '. P . P V . B . V P . P .',
+    '. . P . P V . V P . P . .',
+    '. . . P . P V P . P . . .',
+    '. . . . P . P . P . . . .',
+    '. . . . . P . P . . . . .',
+    '. . . . . . P . . . . . .',
+  ]),
+};
+
 const ALL_PUZZLES: readonly Puzzle[] = [
   // CM1
   P_HEART,
@@ -553,29 +780,40 @@ const ALL_PUZZLES: readonly Puzzle[] = [
   P_STAR,
   P_TREE,
   P_HOUSE,
-  P_CRYSTAL,
   P_KEY,
   P_CROWN,
   P_MUSHROOM,
-  P_LOTUS,
   P_RAINBOW_BUTTERFLY,
   // CM2 (even-width grids)
   P_CASTLE,
-  P_VASE,
   P_DIAMOND_CM2,
   P_TEMPLE,
   P_SHIELD,
+  P_ALIEN,
+  P_ROBOT,
+  P_FUSEE,
   P_ROSACE,
   P_DRAGONFLY,
   P_ANCHOR,
   // 6ème (large complex grids)
   P_CATHEDRAL,
   P_GALAXY,
+  P_BURGER,
+  P_PROCESSOR,
+  P_CRAB,
   P_PYRAMID,
   P_SNOWFLAKE,
   P_MOSAIC,
   P_FORTRESS,
   P_TOTEM,
+  // Insane (13–15 col, extreme patterns)
+  P_MANDALA,
+  P_PHOENIX,
+  P_AZTEC,
+  P_LABYRINTH,
+  P_STAINED_GLASS,
+  P_QUILT,
+  P_FRACTAL,
 ];
 
 // Run validation once at module load. If any puzzle is broken the game fails

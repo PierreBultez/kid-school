@@ -7,12 +7,19 @@ export interface Family {
   name: string;
 }
 
+export interface ActiveChild {
+  id: number;
+  display_name: string;
+  grade_level: 'CM1' | 'CM2' | '6EME';
+}
+
 export interface AuthUser {
   id: number;
   name: string;
   email: string;
   role: 'admin' | 'parent';
   family: Family | null;
+  active_child: ActiveChild | null;
 }
 
 export interface RegisterPayload {

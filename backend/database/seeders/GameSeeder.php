@@ -16,8 +16,8 @@ class GameSeeder extends Seeder
         $game = Game::updateOrCreate(
             ['slug' => 'symmetry-spotter'],
             [
-                'name' => 'Chasse à la symétrie',
-                'description' => 'Observe la figure et dis si elle est symétrique ou non.',
+                'name' => 'Le Miroir Magique',
+                'description' => 'Complète la figure par symétrie en cliquant sur les bonnes cases du miroir.',
                 'engine' => 'pixi',
                 'min_grade' => 'CM1',
                 'max_grade' => '6EME',
@@ -25,10 +25,14 @@ class GameSeeder extends Seeder
             ],
         );
 
-        $objective = LearningObjective::where('code', 'CY3-MAT-EGE-SYM-CM1-01')->first();
+        $objectiveIds = LearningObjective::whereIn('code', [
+            'CY3-MAT-EGE-SYM-CM1-01',
+            'CY3-MAT-EGE-SYM-CM2-01',
+            'CY3-MAT-EGE-SYM-6E-01',
+        ])->pluck('id')->all();
 
-        if ($objective) {
-            $game->learningObjectives()->syncWithoutDetaching([$objective->id]);
+        if (! empty($objectiveIds)) {
+            $game->learningObjectives()->syncWithoutDetaching($objectiveIds);
         }
     }
 }

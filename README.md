@@ -133,23 +133,25 @@ App Angular : http://localhost:4200
 
 ## 🗺️ Feuille de route
 
-### ✅ Phase 0-1 — Cadrage & fondations (fait)
+### ✅ Phase 0-1 — Cadrage & fondations
 
 - Cadrage produit complet (voir [`PROJECT.md`](./PROJECT.md))
 - Monorepo Laravel + Angular
-- Référentiel pédagogique cycle 3 maths extrait, modélisé et seedé
+- Référentiel pédagogique cycle 3 maths extrait, modélisé et seedé (78 objectifs)
 - Back-office Filament v5 complet pour naviguer et éditer le référentiel
+- Auth famille + profils enfants (Sanctum SPA + Fortify headless, RGPD, profile picker Netflix)
+- Angular SPA : login/register, CRUD enfants, guards, services API
 
-### ⏳ Phase 2 — Auth & familles
-Tables `families`, `children`, rôles, Sanctum, policies, conformité RGPD.
+### ✅ Phase 2 — Domaine jeux & 1er mini-jeu
 
-### ⏳ Phase 3 — Premier front Angular
-Login, services API, consommation du référentiel en lecture seule — les fondations Angular posées sur une base concrète.
+- Tables `games`, `game_sessions`, `objective_progress` (+ placeholders SM-2 / Elo)
+- API jeux complète (sessions, answers, progression EWMA)
+- **Le Miroir Magique** : mini-jeu interactif PixiJS v8 ciblant la symétrie axiale (CM1). 12 puzzles pixel-art, moteur modulaire (6 fichiers framework-agnostiques), animations riches, gameplay actif sans indice.
 
-### ⏳ Phase 4 — Progression & mini-jeux
-`games`, `game_sessions`, `objective_progress`, premier mini-jeu PixiJS, XP et étoiles.
+### ⏳ Phase 3 — Gamification & 2e jeu
+XP, étoiles, dashboard parent, 2e mini-jeu (fractions ou calcul mental).
 
-### ⏳ Phase 5 — Polish & bêta fermée
+### ⏳ Phase 4 — Polish & bêta fermée
 PWA, accessibilité WCAG 2.1 AA, audit OWASP, onboarding, 5-10 familles testeuses.
 
 Détail complet : [`PROJECT.md`](./PROJECT.md)

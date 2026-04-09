@@ -94,7 +94,7 @@ l'enfant). Les colonnes sont déjà là.
 - Tests Feature : liste, 409 sans enfant, run complet avec vérif mastery,
   interdiction cross-child.
 
-### Mini-jeu « Chasse à la symétrie »
+### Mini-jeu « Chasse à la symétrie » (v1 — remplacé par « Le Miroir Magique » v2, voir session 2026-04-09)
 
 - Cible : `CY3-MAT-EGE-SYM-CM1-01` (« Reconnaître qu'une figure possède un ou
   plusieurs axes de symétrie »).

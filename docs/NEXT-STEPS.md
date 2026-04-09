@@ -1,6 +1,6 @@
 # Prochaines étapes proposées
 
-> Mis à jour : 2026-04-08, après la session « domaine jeux + 1er PixiJS ».
+> Mis à jour : 2026-04-09, après la refonte complète du 1er mini-jeu (« Le Miroir Magique » v2).
 
 L'ordre ci-dessous est une **proposition** — à trancher ensemble en début de
 prochaine session. Chaque bloc est pensé pour être livrable indépendamment.

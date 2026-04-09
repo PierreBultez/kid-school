@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth.service';
 import { Child, ChildrenService } from '../../core/children.service';
 
 @Component({
@@ -54,6 +55,7 @@ import { Child, ChildrenService } from '../../core/children.service';
   `,
 })
 export class ProfilesComponent {
+  private readonly authService = inject(AuthService);
   private readonly childrenService = inject(ChildrenService);
   private readonly router = inject(Router);
 
@@ -79,7 +81,9 @@ export class ProfilesComponent {
     this.selecting.set(child.id);
     this.error.set(null);
     this.childrenService.select(child.id).subscribe({
-      next: () => this.router.navigateByUrl('/play'),
+      next: () => {
+        this.authService.fetchMe().then(() => this.router.navigateByUrl('/play'));
+      },
       error: () => {
         this.selecting.set(null);
         this.error.set('Impossible de sélectionner ce profil.');
